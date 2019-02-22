@@ -1,4 +1,4 @@
-def readSettings(filepath):
+def read_settings(filepath):
     dictionary = {}
     file = open(filepath, "r")
     for line in file:

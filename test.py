@@ -1,15 +1,21 @@
 import praw
-from settings_parser import readSettings
+from settingsParser import read_settings
+from profiler import slur_sum
+from outputHandler import sort_submission
 
-creds = readSettings("settings.txt")
+
+creds = read_settings("settings.txt")
 
 reddit = praw.Reddit('swearBot')
 
-subreddit = reddit.subreddit(creds["subreddit"])
+sub_reddit = reddit.subreddit(creds["subreddit"])
 
-for submission in subreddit.hot(limit=5):
-    print("Title: ", submission.title)
-    print("Text: ", submission.selftext)
-    print("Score: ", submission.score)
-    print("---------------------------------\n")
+submissions = sub_reddit.mod.modqueue(limit=5)
+
+resultList = [(s, slur_sum(s.selftext)) for s in submissions]
+
+sort_submission(resultList)
+
+for s in resultList:
+    print("%s %s" %(s[0].title, s[1],))
 
